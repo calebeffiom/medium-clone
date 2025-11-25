@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
-import { connectDB } from "@/lib/mongoDB";
-import posts from "@/models/posts";
+import { connectToMongo } from "@/lib/mongoDB";
+import Blog from "@/models/blog-model"
 import mongoose from "mongoose";
 // import { Collection } from "mongodb";
 export async function POST(req: NextRequest){
@@ -9,10 +9,11 @@ export async function POST(req: NextRequest){
 
     console.log(reqBody)
     try {
-      await connectDB()
+      
+      await connectToMongo()
       const authorId = "675abc8940e0c92ad4b1d11b"
         const payload = {
-            author: new mongoose.Types.ObjectId(authorId), // replace with logged-in user
+            authorId: authorId, // replace with logged-in user
             title: "My first blog",
             content: "<p>Hello world</p>",
             coverImage: "https://example.com/image.jpg",
@@ -20,7 +21,8 @@ export async function POST(req: NextRequest){
             published: true,
           }
 
-          const result = await posts.create(payload)
+          const result = await Blog.create(payload)
+
           console.log("added to posts")
           return res.json(
             { success: true, title: result.title},
