@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import { Navbar } from '@shared'
 import './globals.css'
+import { AuthProvider } from './provider'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -15,8 +15,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Navbar />
-        {children}
+       <AuthProvider>
+       {children}
+       </AuthProvider>
       </body>
     </html>
   )
