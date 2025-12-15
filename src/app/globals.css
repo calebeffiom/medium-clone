@@ -17,7 +17,8 @@
 }
 
 body{
-  background-color: #F7F4ED;
+  /* background-color: #F7F4ED; */
+  background-color: #f7f9fa;
 }
 p,li,input,::placeholder{
   font-weight: 300;
