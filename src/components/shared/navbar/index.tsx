@@ -7,9 +7,9 @@ import { User } from "lucide-react";
 const Navbar = () => {
     const [isloggedIn, setIsLoggedIn] = useState(true);
     return (
-        <nav className="navbar bg-white border-b-[1px] border-[#2E2E2E]/30">
-            <Container>
-                <div className="nav-inner flex justify-between items-center py-[15px]">
+        <nav className="sticky top-0 z-50 bg-white border-b-[1px] border-[#2E2E2E]/30">
+            {/* <Container> */}
+                <div className="flex justify-between items-center py-[15px] w-[80%] mx-auto">
                     <div className="logo-cont text-[30px] font-[600] text-[#2E2E2E]">
                         <h2>Ink Labs</h2>
                     </div>
@@ -25,7 +25,7 @@ const Navbar = () => {
                         </div>
                     </div>
                 </div>
-            </Container>
+            {/* </Container> */}
         </nav>
     )
 }

@@ -8,10 +8,10 @@ const BlogPage = () => {
 
             <div className="flex flex-col gap-11 py-[100px]">
                 <Container>
-                    <div className="flex flex-col w-[80] gap-3 mx-auto">
+                    <div className="flex flex-col w-[80%] gap-3 mx-auto">
                         <div className="flex flex-col gap-1">
                             <h1 className="text-[50px] font-bold">Accepting Limits</h1>
-                            <h2 className="text-[25px] font-medium text-[#8f8f8f]">Something That Many (Including Myself) Struggle With</h2>
+                            <h2 className="text-[25px] font-medium text-[#8f8f8f]">Something That Many (Including Myself) Struggle With.</h2>
                         </div>
 
                         <div className="flex flex-row gap-2">
