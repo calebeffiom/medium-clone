@@ -1,4 +1,6 @@
+"use client"
 import { BookMarkedIcon } from "lucide-react"
+import { useRouter } from "next/navigation"
 interface types{
     previewImage: string,
     heading: string,
@@ -19,8 +21,11 @@ const TopArticlePreview = ({
     postTime,
     catergory
 }: types) => {
+    const router = useRouter()
     return(
-        <div className="story-flex-cont h-[450px] relative">
+        <div className="story-flex-cont h-[450px] relative" onClick={()=>{
+            router.push("/blog")
+        }}>
         <img src={previewImage} className="rounded-[10px] mb-[15px] w-[100%] h-[200px]" alt="" />
         <h2 className="text-[25px] mb-[15px] line-clamp-2">{heading}</h2>
         <p className="text-[17px] w-full line-clamp-3">{description}</p>
