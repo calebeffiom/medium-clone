@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 import cloudinary from "@/lib/cloudinaryConfig";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
-import { generateSlug } from "@/lib/helpers";
+import { generateSlug } from "@/utils/helpers";
 // import { Collection } from "mongodb";
 export async function POST(req: NextRequest) {
   const res = NextResponse;

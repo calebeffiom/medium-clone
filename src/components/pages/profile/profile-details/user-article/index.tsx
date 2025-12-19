@@ -1,3 +1,4 @@
+"use client"
 import { BookMarkedIcon } from "lucide-react"
 interface types{
     previewImage: string,

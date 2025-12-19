@@ -3,10 +3,10 @@ import mongoose, { Schema, model, models } from "mongoose";
 const MAX_PINNED_STORIES = 3;
 
 export interface IUser extends Document {
-  displayName: string;
+  name: string;
   username: string;
   email: string; 
-  profilePicture: string; 
+  image: string; 
   coverPicture: string;   
   bio: string;
   blogsWritten: mongoose.Schema.Types.ObjectId[]; 
@@ -18,10 +18,10 @@ export interface IUser extends Document {
 
 const UserSchema = new Schema<IUser>(
   {
-    displayName: {type: String, required: true},
+    name: {type: String, required: true},
     username: {type: String, required: true, unique: true},
     email: {type: String, required: true, unique: true},
-    profilePicture: {type: String, default: "/images/profile.png"},
+    image: {type: String, default: "/images/profile.png"},
     coverPicture: {type: String, default: "black"},
     bio: {type: String, default: "Nothing to see here yet"},
     blogsWritten: [{type: mongoose.Schema.Types.ObjectId, ref: "Blog"}],
