@@ -5,7 +5,7 @@ const MAX_PINNED_STORIES = 3;
 export interface IUser extends Document {
   name: string;
   username: string;
-  email: string; 
+  email: string;
   image: string; 
   coverPicture: string;   
   bio: string;
@@ -19,8 +19,8 @@ export interface IUser extends Document {
 const UserSchema = new Schema<IUser>(
   {
     name: {type: String, required: true},
-    username: {type: String, required: true, unique: true},
-    email: {type: String, required: true, unique: true},
+    username: {type: String, unique: true, sparse: true },
+    email: {type: String, required: true, unique: true, sparse: true },
     image: {type: String, default: "/images/profile.png"},
     coverPicture: {type: String, default: "black"},
     bio: {type: String, default: "Nothing to see here yet"},
@@ -30,8 +30,8 @@ const UserSchema = new Schema<IUser>(
   },
   {
     timestamps: true, 
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
+    toJSON: { virtuals: true, getters: true },
+    toObject: { virtuals: true, getters: true },
   }
 );
 UserSchema.path('pinnedStories').validate(function (value) {
@@ -48,4 +48,4 @@ UserSchema.virtual("blogsCount").get(function(this: IUser) {
 return this.blogsWritten ? this.blogsWritten.length : 0;
 });
 
-export default models.User || model("User", UserSchema);
+export default models.Users || model("Users", UserSchema);
