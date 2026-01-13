@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 import cloudinary from "@/lib/cloudinaryConfig";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
-import { generateSlug } from "@/utils/helpers";
+import { generateSlug, getAllBlogs } from "@/utils/helpers";
 // import { Collection } from "mongodb";
 export async function POST(req: NextRequest) {
   const res = NextResponse;
@@ -78,6 +78,16 @@ export async function POST(req: NextRequest) {
 }
 
 
+
 export async function GET() {
-  return NextResponse.json({ ok: true, time: new Date().toISOString() });
+  try {
+    const blogs = await getAllBlogs();
+    return NextResponse.json({ blogs }, { status: 200 });
+  } catch (error) {
+    console.error("Error in GET /api/publish-blog:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch blogs" },
+      { status: 500 }
+    );
+  }
 }

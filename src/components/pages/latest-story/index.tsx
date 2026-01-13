@@ -1,7 +1,29 @@
 "use client"
 import { Container } from "@shared";
 import ArticlePreview from "./article-preview";
+import { useRecoilState } from "recoil";
+import { blogsAtom } from "@/utils/states/blogsAtom";
+import { useCallback, useEffect } from "react";
+import axios from "axios";
+
 const LatestStoriesSection = () => {
+    const [blogs, setBlogs] = useRecoilState(blogsAtom);
+
+    const fetchBlogs = useCallback(async () => {
+        try {
+            const res = await axios.get("/api/publish-blog");
+            if (res.data.blogs) {
+                setBlogs(res.data.blogs);
+            }
+        } catch (error) {
+            console.error("Error fetching blogs:", error);
+        }
+    }, [setBlogs]);
+
+    useEffect(() => {
+        fetchBlogs();
+    }, [fetchBlogs]);
+
     return (
         <section>
             <Container>
@@ -11,55 +33,24 @@ const LatestStoriesSection = () => {
                         <p className="text-[18px] font-[300]">Stay upto date with the lastest write ups, inspirng articles and many more.</p>
                     </div>
                     <div className="grid grid-cols-4 gap-6">
-
-                    <ArticlePreview
-                        previewImage="/images/ice.jpeg"
-                        heading="Terrifying Legend: Abandoned Portlock Alaska"
-                        description="This piece is for my New Year's resolution to share one original song, however imperfect/unfinished it may be, per month! I'll put the link to the article"
-                        profileImage="/images/profile.png"
-                        userName="sara burdick"
-                        postTime="a day ago"
-                        catergory="Horror"
-                    />
-
-                    <ArticlePreview
-                        previewImage="/images/better.jpg"
-                        heading="I Deserve Better"
-                        description="This piece is for my New Year's resolution to share one original song, however imperfect/unfinished it may be, per month! I'll put the link to the article"
-                        profileImage="/images/profile.png"
-                        userName="sara burdick"
-                        postTime="a day ago"
-                        catergory="Horror"
-                    />
-                     <ArticlePreview
-                        previewImage="/images/talkingDrums.jpeg"
-                        heading="Talking Drums to 21st-Century Parties: The"
-                        description="This piece is for my New Year's resolution to share one original song, however imperfect/unfinished it may be, per month! I'll put the link to the article"
-                        profileImage="/images/profile.png"
-                        userName="sara burdick"
-                        postTime="a day ago"
-                        catergory="Horror"
-                    />
-                       <ArticlePreview
-                        previewImage="/images/flower-eyes.jpeg"
-                        heading="Awake In The Dark"
-                        description="This piece is for my New Year's resolution to share one original song, however imperfect/unfinished it may be, per month! I'll put the link to the article"
-                        profileImage="/images/profile.png"
-                        userName="sara burdick"
-                        postTime="a day ago"
-                        catergory="Horror"
-                    />
-                       <ArticlePreview
-                        previewImage="/images/ice.jpeg"
-                        heading="Awake In The Dark"
-                        description="This piece is for my New Year's resolution to share one original song, however imperfect/unfinished it may be, per month! I'll put the link to the article"
-                        profileImage="/images/profile.png"
-                        userName="sara burdick"
-                        postTime="a day ago"
-                        catergory="Horror"
-                    />
+                        {blogs && blogs.length > 0 ? (
+                            blogs.map((blog: any) => (
+                                <ArticlePreview
+                                    key={blog._id}
+                                    previewImage={blog.coverImage || "/images/ice.jpeg"}
+                                    heading={blog.title}
+                                    description={blog.subtitle || blog.content[0]}
+                                    profileImage="/images/profile.png"
+                                    userName="sara burdick"
+                                    postTime="a day ago"
+                                    catergory={blog.tags[0] || "Horror"}
+                                />
+                            ))
+                        ) : (
+                            <p>No stories found.</p>
+                        )}
                     </div>
-                    </div>   
+                </div>
             </Container>
         </section>
     )

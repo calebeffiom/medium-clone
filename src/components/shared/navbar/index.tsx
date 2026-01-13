@@ -13,7 +13,7 @@ const Navbar = () => {
                 <div className="flex justify-between items-center py-[15px]">
                     <div className="logo-cont text-[30px] font-[600] text-[#2E2E2E]">
                         <h2>Ink Labs</h2>
-                        <button className="bg-[red]" onClick={async () => await signOut()}>signout</button>
+                        {/* <button className="bg-[red]" onClick={async () => await signOut()}>signout</button> */}
                     </div>
                     <div className="nav-search-profile-cont flex items-center">
                         <div className="nav-links-cont flex items-center justify-between">
