@@ -86,6 +86,7 @@ const getUserById = async (id: string) => {
                 path: 'blogsWritten',
                 options: { sort: { createdAt: -1 } }
             })
+            .populate('pinnedStories')
             .lean()
         return user
     } catch (error) {
@@ -101,4 +102,45 @@ const formatMonthYear = (dateString: string | Date) => {
     return `${months[date.getMonth()]} ${date.getFullYear()}`;
 };
 
-export { generateSlug, getAllBlogs, formatRelativeTime, getBlogBySlug, getUserById, formatMonthYear }
+const pinPost = async (userId: string, postId: string) => {
+    try {
+        await connectToMongo()
+        const user = await User.findById(userId)
+        if (!user) throw new Error("User not found")
+
+        if (user.pinnedStories.includes(postId)) {
+            return user; // Already pinned
+        }
+
+        if (user.pinnedStories.length >= 3) {
+            throw new Error("Maximum of 3 pinned stories allowed")
+        }
+
+        user.pinnedStories.push(postId)
+        await user.save()
+        return user
+    } catch (error) {
+        console.error('Error pinning post', error)
+        throw error
+    }
+}
+
+const unpinPost = async (userId: string, postId: string) => {
+    try {
+        await connectToMongo()
+        const user = await User.findById(userId)
+        if (!user) throw new Error("User not found")
+
+        const postIndex = user.pinnedStories.indexOf(postId)
+        if (postIndex > -1) {
+            user.pinnedStories.splice(postIndex, 1)
+            await user.save()
+        }
+        return user
+    } catch (error) {
+        console.error('Error unpinning post', error)
+        throw error
+    }
+}
+
+export { generateSlug, getAllBlogs, formatRelativeTime, getBlogBySlug, getUserById, formatMonthYear, pinPost, unpinPost }

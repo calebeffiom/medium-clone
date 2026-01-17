@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
-import { getUserById, formatRelativeTime, formatMonthYear } from "@/utils/helpers";
+import { getUserById, formatRelativeTime, formatMonthYear, pinPost, unpinPost } from "@/utils/helpers";
 
 export async function GET() {
     try {
@@ -54,6 +54,66 @@ export async function GET() {
         console.error("Error in GET /api/user:", error);
         return NextResponse.json(
             { error: "Failed to fetch user" },
+            { status: 500 }
+        );
+    }
+}
+
+export async function PUT(request: Request) {
+    try {
+        const session: any = await getServerSession(authOptions)
+        if (!session || !session.user) {
+            return NextResponse.json(
+                { message: "Unauthorized: You must be logged in to pin stories" },
+                { status: 401 }
+            )
+        }
+
+        const { postId } = await request.json()
+        if (!postId) {
+            return NextResponse.json(
+                { message: "Post ID is required" },
+                { status: 400 }
+            )
+        }
+
+        await pinPost(session.user.id, postId)
+
+        return NextResponse.json({ message: "Post pinned successfully" }, { status: 200 });
+    } catch (error: any) {
+        console.error("Error in PUT /api/user:", error);
+        return NextResponse.json(
+            { error: error.message || "Failed to pin story" },
+            { status: 500 }
+        );
+    }
+}
+
+export async function DELETE(request: Request) {
+    try {
+        const session: any = await getServerSession(authOptions)
+        if (!session || !session.user) {
+            return NextResponse.json(
+                { message: "Unauthorized: You must be logged in to unpin stories" },
+                { status: 401 }
+            )
+        }
+
+        const { postId } = await request.json()
+        if (!postId) {
+            return NextResponse.json(
+                { message: "Post ID is required" },
+                { status: 400 }
+            )
+        }
+
+        await unpinPost(session.user.id, postId)
+
+        return NextResponse.json({ message: "Post unpinned successfully" }, { status: 200 });
+    } catch (error: any) {
+        console.error("Error in DELETE /api/user:", error);
+        return NextResponse.json(
+            { error: error.message || "Failed to unpin story" },
             { status: 500 }
         );
     }

@@ -10,11 +10,12 @@ const PinnedTab = () => {
                 user?.pinnedStories.map((blog: any, index: number) => (
                     <UserArticle
                         key={index}
+                        id={blog.id}
                         previewImage={blog.coverImage}
                         heading={blog.title}
                         description={blog.content}
-                        profileImage={blog.author.image}
-                        userName={blog.author.name}
+                        profileImage={user.image}
+                        userName={user.name}
                         postTime={blog.createdAt}
                         catergory={blog.tags[0]}
                     />

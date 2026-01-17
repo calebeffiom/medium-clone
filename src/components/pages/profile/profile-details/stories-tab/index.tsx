@@ -11,6 +11,7 @@ const StoriesTab = () => {
                 user?.blogsWritten.map((blog: any, index: number) => (
                     <UserArticle
                         key={index}
+                        id={blog.id}
                         previewImage={blog.coverImage}
                         heading={blog.title}
                         description={blog.content}
