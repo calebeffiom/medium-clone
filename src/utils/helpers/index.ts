@@ -199,4 +199,25 @@ const toggleLike = async (slug: string, userId: string, action: "like" | "unlike
     }
 }
 
-export { generateSlug, getAllBlogs, formatRelativeTime, getBlogBySlug, getUserById, formatMonthYear, pinPost, unpinPost, addComment, toggleLike }
+const getUserByUsername = async (username: string) => {
+    try {
+        await connectToMongo()
+        const user = await User.findOne({ username })
+            .populate({
+                path: 'blogsWritten',
+                match: { published: true }, // Only public stories
+                options: { sort: { createdAt: -1 } }
+            })
+            .populate({
+                path: 'pinnedStories',
+                match: { published: true }
+            })
+            .lean()
+        return user
+    } catch (error) {
+        console.error('Error fetching user by username', error)
+        throw error
+    }
+}
+
+export { generateSlug, getAllBlogs, formatRelativeTime, getBlogBySlug, getUserById, formatMonthYear, pinPost, unpinPost, addComment, toggleLike, getUserByUsername }

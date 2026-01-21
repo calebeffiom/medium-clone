@@ -3,13 +3,16 @@ import { Container } from "@shared";
 import ArticlePreview from "./article-preview";
 import { useRecoilState } from "recoil";
 import { blogsAtom } from "@/utils/states/blogsAtom";
-import { useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import axios from "axios";
+import ArticleSkeleton from "./article-skeleton";
 
 const LatestStoriesSection = () => {
     const [blogs, setBlogs] = useRecoilState(blogsAtom);
+    const [loading, setLoading] = useState(blogs.length === 0);
 
     const fetchBlogs = useCallback(async () => {
+        if (blogs.length === 0) setLoading(true);
         try {
             const res = await axios.get("/api/publish-blog");
             if (res.data.formatBlogs) {
@@ -17,8 +20,10 @@ const LatestStoriesSection = () => {
             }
         } catch (error) {
             console.error("Error fetching blogs:", error);
+        } finally {
+            setLoading(false);
         }
-    }, [setBlogs]);
+    }, [setBlogs, blogs.length]);
 
     useEffect(() => {
         fetchBlogs();
@@ -33,7 +38,11 @@ const LatestStoriesSection = () => {
                         <p className="text-[18px] font-[300]">Stay upto date with the lastest write ups, inspirng articles and many more.</p>
                     </div>
                     <div className="grid grid-cols-4 gap-6">
-                        {blogs && blogs.length > 0 ? (
+                        {loading ? (
+                            Array.from({ length: 8 }).map((_, i) => (
+                                <ArticleSkeleton key={i} />
+                            ))
+                        ) : blogs && blogs.length > 0 ? (
                             blogs.map((blog: any) => (
                                 <ArticlePreview
                                     key={blog.id}

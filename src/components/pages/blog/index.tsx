@@ -4,6 +4,7 @@ import CommentCard from "./comment-card"
 import CommentForm from "./comment-form"
 import { Heart, MessageCircle, Share2 } from "lucide-react"
 import { useState, useEffect, useCallback } from "react"
+import BlogSkeleton from "./blog-skeleton"
 
 import axios from "axios"
 
@@ -17,6 +18,7 @@ const BlogPage = ({ slug }: BlogPageProps) => {
     const [showComments, setShowComments] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const fetchBlog = useCallback(async () => {
+        setLoading(true);
         try {
             const res = await axios.get(`/api/blogs/${slug}`);
             if (res.data.formatBlog) {
@@ -84,11 +86,7 @@ const BlogPage = ({ slug }: BlogPageProps) => {
     };
 
     if (loading) {
-        return (
-            <Container>
-                <div className="py-20 text-center text-xl">Loading...</div>
-            </Container>
-        );
+        return <BlogSkeleton />;
     }
 
     if (!blog) {

@@ -16,13 +16,13 @@ export async function GET(
         }
 
         const session = await getServerSession(authOptions);
-        console.log(`Fetching blog: ${slug}, User: ${session?.user?.id}`);
-        console.log(`likedBy from DB:`, blog.likedBy);
+
+
 
         const hasLiked = session?.user?.id
             ? blog.likedBy?.some((id: any) => id.toString() === session.user.id)
             : false;
-        console.log(`Has Liked: ${hasLiked}`);
+
 
         const formatBlog = {
             id: blog._id.toString(),

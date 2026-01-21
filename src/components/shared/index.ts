@@ -1,3 +1,3 @@
-import Container from "./container";
-import Navbar from "./navbar";
-export {Container, Navbar}
+export { default as Container } from "./container";
+export { default as Navbar } from "./navbar";
+export { default as Skeleton } from "./skeleton";

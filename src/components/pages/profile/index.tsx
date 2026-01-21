@@ -2,15 +2,18 @@
 import { Container } from "@shared";
 import ProfileActions from "./profile-actions";
 import ProfileDetails from "./profile-details";
-import { useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import axios from "axios";
 import { useRecoilState } from "recoil";
 import { userAtom } from "@/utils/states/userAtom";
+import ProfileSkeleton from "./profile-skeleton";
 
 const ProfilePage = () => {
     const [user, setUser] = useRecoilState(userAtom);
+    const [loading, setLoading] = useState(!user);
 
     const fetchUserProfile = useCallback(async () => {
+        if (!user) setLoading(true);
         try {
             const res = await axios.get("/api/user");
             if (res.data.formatedUser) {
@@ -18,12 +21,18 @@ const ProfilePage = () => {
             }
         } catch (error) {
             console.error("Error fetching user profile:", error);
+        } finally {
+            setLoading(false);
         }
-    }, [setUser]);
+    }, [setUser, user]);
 
     useEffect(() => {
         fetchUserProfile();
     }, [fetchUserProfile]);
+
+    if (loading) {
+        return <ProfileSkeleton />;
+    }
 
 
     return (

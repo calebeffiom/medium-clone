@@ -27,14 +27,13 @@ export const authOptions: NextAuthOptions = {
             return baseUrl;
         },
         async signIn({ user, account, profile }) {
-            console.log("DEBUG: signIn callback", { email: user.email, provider: account?.provider });
             // Sync OAuth user with custom Users collection
             if (account?.provider === "google" && user.email) {
                 try {
                     await connectToMongo();
                     // Check if user exists in our custom Users collection
                     const existingUser = await User.findOne({ email: user.email });
-                    console.log("DEBUG: existingUser check", { exists: !!existingUser });
+
                     if (!existingUser) {
                         // Create new user in our custom Users collection
                         const newUser = await User.create({
@@ -43,7 +42,7 @@ export const authOptions: NextAuthOptions = {
                             image: user.image || "/images/profile.png",
                             username: user.email.split("@")[0] + "_" + Date.now(), // Generate unique username
                         });
-                        console.log("DEBUG: new user created in custom collection", { id: newUser._id });
+
                     }
                 } catch (error) {
                     console.error("DEBUG: Error syncing user to custom collection:", error);

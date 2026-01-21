@@ -70,7 +70,7 @@ const UserArticle = ({
             <div onClick={() => console.log("clicked")}>
                 <img src={previewImage} className="rounded-[10px] mb-[15px] w-[100%] h-[200px]" alt="" />
                 <h2 className="text-[25px] mb-[15px] line-clamp-2">{heading}</h2>
-                <p className="text-[17px] w-full line-clamp-3">{description}</p>
+                <p className="text-[17px] w-full line-clamp-3">{Array.isArray(description) ? description[0] : description}</p>
             </div>
             <div className="article-writer-details w-[100%] flex items-center justify-between absolute bottom-0">
                 <div className="author-cont flex gap-[10px] items-center">
