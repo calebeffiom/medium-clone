@@ -1,6 +1,7 @@
 "use client"
 import { Container } from "@shared"
 import CommentCard from "./comment-card"
+import CommentForm from "./comment-form"
 import { Heart, MessageCircle, Share2 } from "lucide-react"
 import { useState, useEffect, useCallback } from "react"
 import axios from "axios"
@@ -12,6 +13,8 @@ interface BlogPageProps {
 const BlogPage = ({ slug }: BlogPageProps) => {
     const [blog, setBlog] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [showComments, setShowComments] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const fetchBlog = useCallback(async () => {
         try {
@@ -31,6 +34,23 @@ const BlogPage = ({ slug }: BlogPageProps) => {
             fetchBlog();
         }
     }, [slug, fetchBlog]);
+
+
+    const handleCommentSubmit = async (content: string) => {
+        setIsSubmitting(true);
+        try {
+            // Placeholder for comment submission
+            // const res = await axios.post(`/api/blogs/${slug}/comments`, { content });
+            const res = await axios.post(`/api/blogs/${slug}/blog-actions`, { content, action: "comment" });
+            // For now, let's just simulate adding it or re-fetching
+            console.log("Submitting comment:", content);
+            await fetchBlog(); // Re-fetch to see new comments if any
+        } catch (error) {
+            console.error("Error submitting comment:", error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     if (loading) {
         return (
@@ -91,7 +111,10 @@ const BlogPage = ({ slug }: BlogPageProps) => {
                         <div className="w-full">
                             <div className="p-4 border-t-[2px] border-b-[2px] border-[#8f8f8f] flex justify-between  mx-auto">
                                 <div className="flex gap-4">
-                                    <span className="flex p-2 rounded-xl gap-2 text-[#8f8f8f] hover:bg-[#8f8f8f]/10 cursor-pointer">
+                                    <span
+                                        onClick={() => setShowComments(!showComments)}
+                                        className={`flex p-2 rounded-xl gap-2 text-[#8f8f8f] hover:bg-[#8f8f8f]/10 cursor-pointer ${showComments ? 'bg-[#8f8f8f]/10' : ''}`}
+                                    >
                                         <MessageCircle />
                                         {blog.comments?.length || 0}
                                     </span>
@@ -108,16 +131,28 @@ const BlogPage = ({ slug }: BlogPageProps) => {
                             </div>
                         </div>
 
-                        <div className="flex flex-col gap-10">
-                            {/* Comments would go here */}
-                            {blog.comments && blog.comments.length > 0 ? (
-                                blog.comments.map((comment: any, index: number) => (
-                                    <CommentCard key={index} comment={comment} />
-                                ))
-                            ) : (
-                                <p className="text-center text-gray-500">No comments yet.</p>
-                            )}
-                        </div>
+                        {showComments && (
+                            <div className="flex flex-col gap-10 mt-10">
+                                <h3 className="text-2xl font-bold max-w-3xl mx-auto w-full mb-4">
+                                    Responses ({blog.comments?.length || 0})
+                                </h3>
+
+                                <CommentForm
+                                    onSubmit={handleCommentSubmit}
+                                    isSubmitting={isSubmitting}
+                                />
+
+                                <div className="flex flex-col gap-10">
+                                    {blog.comments && blog.comments.length > 0 ? (
+                                        blog.comments.map((comment: any, index: number) => (
+                                            <CommentCard key={index} comment={comment} />
+                                        ))
+                                    ) : (
+                                        <p className="text-center text-gray-500">No comments yet. Be the first to respond!</p>
+                                    )}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </Container>
             </div>

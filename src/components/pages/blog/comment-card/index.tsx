@@ -19,7 +19,7 @@ export default function CommentCard({ comment }: CommentCardProps) {
       <div className="flex items-start gap-4">
         {/* Avatar */}
         <div className="h-12 w-12 overflow-hidden rounded-full bg-gray-200 shrink-0">
-          <Image
+          <img
             src={comment.author.image || "/images/profile.png"}
             alt={comment.author.name}
             width={48}

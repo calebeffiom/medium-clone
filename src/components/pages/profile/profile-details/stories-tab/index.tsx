@@ -8,7 +8,7 @@ const StoriesTab = () => {
     return (
         <div className="stories-cont grid grid-cols-3 gap-[30px]">
             {
-                user?.blogsWritten.map((blog: any, index: number) => (
+                user?.blogsWritten.filter((blog: any) => blog.published === true).map((blog: any, index: number) => (
                     <UserArticle
                         key={index}
                         id={blog.id}

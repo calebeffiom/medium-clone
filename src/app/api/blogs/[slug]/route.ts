@@ -23,7 +23,15 @@ export async function GET(
             tags: blog.tags,
             published: blog.published,
             likes: blog.likes,
-            comments: blog.comments,
+            comments: blog.comments?.map((comment: any) => ({
+                content: comment.content,
+                author: {
+                    username: comment.author?.username || "Anonymous",
+                    name: comment.author?.name || "Anonymous",
+                    image: comment.author?.image || "/images/profile.png"
+                },
+                createdAt: formatRelativeTime(comment.createdAt.toISOString())
+            })).reverse(),
             author: {
                 id: blog.author._id.toString(),
                 name: blog.author.name,
@@ -44,3 +52,4 @@ export async function GET(
         );
     }
 }
+

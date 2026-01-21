@@ -15,7 +15,7 @@ const getAllBlogs = async () => {
     try {
         await connectToMongo()
 
-        const blogs = await Blog.find({})
+        const blogs = await Blog.find({ published: true })
             .sort({ createdAt: -1 })
             .populate('author') // 👈 THIS LINE
             .lean()
@@ -70,6 +70,7 @@ const getBlogBySlug = async (slug: string) => {
         await connectToMongo()
         const blog = await Blog.findOne({ slug })
             .populate('author')
+            .populate('comments.author')
             .lean()
         return blog
     } catch (error) {
@@ -143,4 +144,25 @@ const unpinPost = async (userId: string, postId: string) => {
     }
 }
 
-export { generateSlug, getAllBlogs, formatRelativeTime, getBlogBySlug, getUserById, formatMonthYear, pinPost, unpinPost }
+const addComment = async (slug: string, authorId: string, content: string) => {
+    try {
+        await connectToMongo()
+        const blog = await Blog.findOne({ slug })
+        if (!blog) throw new Error("Blog not found")
+
+        const newComment = {
+            author: authorId,
+            content,
+            createdAt: new Date()
+        }
+
+        blog.comments.push(newComment);
+        await blog.save();
+        return blog;
+    } catch (error) {
+        console.error('Error adding comment:', error);
+        throw error;
+    }
+}
+
+export { generateSlug, getAllBlogs, formatRelativeTime, getBlogBySlug, getUserById, formatMonthYear, pinPost, unpinPost, addComment }

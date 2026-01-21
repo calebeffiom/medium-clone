@@ -1,6 +1,6 @@
 "use client"
 import { useRef, useState, ChangeEvent, useCallback, TextareaHTMLAttributes } from "react";
-import {Container} from "@shared";
+import { Container } from "@shared";
 import { Plus, X, Image as ImageIcon, Upload } from "lucide-react";
 import axios from "axios";
 
@@ -15,7 +15,7 @@ interface TextState {
     tags: string[]
 }
 
-const CreateStory = ()=> {
+const CreateStory = () => {
     const [text, setText] = useState<TextState>({
         title: "",
         subtitle: "",
@@ -30,19 +30,19 @@ const CreateStory = ()=> {
     // Refs for title and subtitle
     const titleRef = useRef<HTMLTextAreaElement>(null);
     const subtitleRef = useRef<HTMLTextAreaElement>(null);
-    
+
     /**
      * Handles input changes and dynamically adjusts the height of the textarea.
      */
     const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
         const { name, value } = event.target;
-        
+
         if (name === "title" || name === "subtitle") {
             setText((prev) => ({
                 ...prev,
                 [name]: value,
             }));
-            
+
             const currentRef = name === "title" ? titleRef.current : subtitleRef.current;
             if (currentRef) {
                 currentRef.style.height = "auto";
@@ -63,7 +63,7 @@ const CreateStory = ()=> {
                 paragraphs: newParagraphs,
             };
         });
-        
+
         const currentRef = paragraphRefs.current[index];
         if (currentRef) {
             currentRef.style.height = "auto";
@@ -133,21 +133,21 @@ const CreateStory = ()=> {
         fileInputRef.current?.click();
     };
 
-    const handleTagsChange = (e: ChangeEvent<HTMLTextAreaElement>)=>{
-        const {value, name} = e.target
+    const handleTagsChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+        const { value, name } = e.target
         const tags = value.trim()
-        .replace(/\s+/g, " ")
-        .split(/[,\s]+/)
-        .filter(Boolean);
-        setText((prev)=>({
+            .replace(/\s+/g, " ")
+            .split(/[,\s]+/)
+            .filter(Boolean);
+        setText((prev) => ({
             ...prev,
             [name]: tags
         }))
     }
 
 
-    const publishBlog= async ()=>{
-        
+    const publishBlog = async () => {
+
         if (text.title === "") setFormError("Title is required");
         if (text.subtitle === "") setFormError("Subtitle is required");
         if (text.coverImage === null) setFormError("Cover image is required");
@@ -155,38 +155,53 @@ const CreateStory = ()=> {
         if (text.tags.length < 1) setFormError("Add at least one tag");
         console.log(formError)
         try {
-            const req = await axios.post("/api/publish-blog",text)
+            const req = await axios.post("/api/publish-blog", text)
             console.log(req.data.message)
         } catch (error) {
             console.log(error)
         }
     }
-    
+
+    const draftBlog = async () => {
+        if (text.title === "") setFormError("Title is required");
+        if (text.subtitle === "") setFormError("Subtitle is required");
+        if (text.coverImage === null) setFormError("Cover image is required");
+        if (text.paragraphs.length <= 1) setFormError("Add at least two paragraph");
+        if (text.tags.length < 1) setFormError("Add at least one tag");
+        console.log(formError)
+        try {
+            const req = await axios.post("/api/draft-blog", text)
+            console.log(req.data.message)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <section className="min-h-screen">
             <Container>
                 <div className="section-inner py-16">
                     <div className="max-w-4xl mx-auto space-y-8">
-                        
+
                         {/* Title Section */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2 transition-all duration-300">
-                            <textarea 
+                            <textarea
                                 ref={titleRef}
-                                name="title" 
-                                placeholder="Story Title" 
+                                name="title"
+                                placeholder="Story Title"
                                 value={text.title}
                                 onChange={handleChange}
                                 rows={1}
                                 className="w-full resize-none overflow-hidden px-4 py-3 text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight placeholder-gray-400 text-gray-900 bg-transparent outline-none focus:ring-0 transition duration-150"
                             />
                         </div>
-                        
+
                         {/* Subtitle Section */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2 transition-all duration-300">
-                            <textarea 
+                            <textarea
                                 ref={subtitleRef}
-                                name="subtitle" 
-                                placeholder="Story Subtitle" 
+                                name="subtitle"
+                                placeholder="Story Subtitle"
                                 value={text.subtitle}
                                 onChange={handleChange}
                                 rows={1}
@@ -198,9 +213,9 @@ const CreateStory = ()=> {
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 transition-all duration-300">
                             {imagePreview ? (
                                 <div className="relative group">
-                                    <img 
-                                        src={imagePreview} 
-                                        alt="Cover" 
+                                    <img
+                                        src={imagePreview}
+                                        alt="Cover"
                                         className="w-full h-auto max-h-96 object-cover rounded-lg"
                                     />
                                     <button
@@ -212,7 +227,7 @@ const CreateStory = ()=> {
                                     </button>
                                 </div>
                             ) : (
-                                <div 
+                                <div
                                     onClick={triggerImageUpload}
                                     className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
                                 >
@@ -239,7 +254,7 @@ const CreateStory = ()=> {
                                 </div>
                             )}
                         </div>
-                        
+
                         {/* Content Section - Paragraph Blocks */}
                         <div className="space-y-4">
                             {text.paragraphs.map((paragraph, index) => (
@@ -283,18 +298,18 @@ const CreateStory = ()=> {
                         </div>
 
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2 transition-all duration-300">
-                        <textarea
-                            name="tags"
-                            value={text.tags}
-                            onChange={handleTagsChange}
-                            placeholder="Include post tags here"
-                            className="w-full max-h-40 resize-none overflow-hidden px-4 py-3 outline-none focus:ring-0 transition duration-150"
+                            <textarea
+                                name="tags"
+                                value={text.tags}
+                                onChange={handleTagsChange}
+                                placeholder="Include post tags here"
+                                className="w-full max-h-40 resize-none overflow-hidden px-4 py-3 outline-none focus:ring-0 transition duration-150"
                             />
                         </div>
-                        
+
                         {/* Action Buttons */}
                         <div className="flex justify-end space-x-4 pt-6">
-                            <button className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition duration-200 ease-in-out">
+                            <button className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition duration-200 ease-in-out" onClick={draftBlog}>
                                 Save Draft
                             </button>
                             <button className="px-6 py-3 bg-[#2E2E2E] text-white rounded-xl font-semibold shadow-md transition duration-200 ease-in-out" onClick={publishBlog}>
