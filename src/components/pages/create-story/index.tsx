@@ -217,11 +217,11 @@ const CreateStory = () => {
     return (
         <section className="min-h-screen">
             <Container>
-                <div className="section-inner py-16">
-                    <div className="max-w-4xl mx-auto space-y-8">
+                <div className="section-inner py-8 md:py-16">
+                    <div className="max-w-4xl mx-auto space-y-6 md:space-y-8">
 
                         {/* Title Section */}
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2 transition-all duration-300">
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-1 md:p-2 transition-all duration-300">
                             <textarea
                                 ref={titleRef}
                                 name="title"
@@ -229,12 +229,12 @@ const CreateStory = () => {
                                 value={text.title}
                                 onChange={handleChange}
                                 rows={1}
-                                className="w-full resize-none overflow-hidden px-4 py-3 text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight placeholder-gray-400 text-gray-900 bg-transparent outline-none focus:ring-0 transition duration-150"
+                                className="w-full resize-none overflow-hidden px-4 py-3 text-3xl sm:text-4xl md:text-6xl font-extrabold leading-tight placeholder-gray-400 text-gray-900 bg-transparent outline-none focus:ring-0 transition duration-150"
                             />
                         </div>
 
                         {/* Subtitle Section */}
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2 transition-all duration-300">
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-1 md:p-2 transition-all duration-300">
                             <textarea
                                 ref={subtitleRef}
                                 name="subtitle"
@@ -242,31 +242,31 @@ const CreateStory = () => {
                                 value={text.subtitle}
                                 onChange={handleChange}
                                 rows={1}
-                                className="w-full resize-none overflow-hidden px-4 py-3 text-xl sm:text-2xl md:text-3xl font-medium leading-snug placeholder-gray-400 text-gray-700 bg-transparent outline-none focus:ring-0 transition duration-150"
+                                className="w-full resize-none overflow-hidden px-4 py-3 text-lg sm:text-xl md:text-3xl font-medium leading-snug placeholder-gray-400 text-gray-700 bg-transparent outline-none focus:ring-0 transition duration-150"
                             />
                         </div>
 
                         {/* Image Upload Section */}
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 transition-all duration-300">
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 transition-all duration-300">
                             {imagePreview ? (
                                 <div className="relative group">
                                     <img
                                         src={imagePreview}
                                         alt="Cover"
-                                        className="w-full h-auto max-h-96 object-cover rounded-lg"
+                                        className="w-full h-auto max-h-64 md:max-h-96 object-cover rounded-lg"
                                     />
                                     <button
                                         onClick={handleImageRemove}
-                                        className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600 shadow-lg"
+                                        className="absolute top-2 right-2 md:top-4 md:right-4 p-2 bg-red-500 text-white rounded-full opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600 shadow-lg"
                                         aria-label="Remove image"
                                     >
-                                        <X className="w-5 h-5" />
+                                        <X className="w-4 h-4 md:w-5 md:h-5" />
                                     </button>
                                 </div>
                             ) : (
                                 <div
                                     onClick={triggerImageUpload}
-                                    className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
+                                    className="border-2 border-dashed border-gray-300 rounded-xl p-8 md:p-12 text-center cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
                                 >
                                     <input
                                         ref={fileInputRef}
@@ -276,14 +276,14 @@ const CreateStory = () => {
                                         className="hidden"
                                     />
                                     <div className="flex flex-col items-center space-y-4">
-                                        <div className="p-4 bg-gray-100 rounded-full">
-                                            <ImageIcon className="w-8 h-8 text-gray-600" />
+                                        <div className="p-3 md:p-4 bg-gray-100 rounded-full">
+                                            <ImageIcon className="w-6 h-6 md:w-8 md:h-8 text-gray-600" />
                                         </div>
                                         <div>
-                                            <p className="text-lg font-semibold text-gray-700 mb-1">
+                                            <p className="text-base md:text-lg font-semibold text-gray-700 mb-1">
                                                 Add a cover image
                                             </p>
-                                            <p className="text-sm text-gray-500">
+                                            <p className="text-xs md:text-sm text-gray-500">
                                                 Click to upload or drag and drop
                                             </p>
                                         </div>
@@ -296,8 +296,8 @@ const CreateStory = () => {
                         <div className="space-y-4">
                             {text.paragraphs.map((paragraph, index) => (
                                 <div key={index} className="relative group">
-                                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 transition-all duration-300 hover:shadow-md">
-                                        <div className="flex items-start gap-4">
+                                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 md:p-4 transition-all duration-300 hover:shadow-md">
+                                        <div className="flex items-start gap-2 md:gap-4">
                                             <div className="flex-1">
                                                 <textarea
                                                     ref={(el) => {
@@ -307,13 +307,13 @@ const CreateStory = () => {
                                                     onChange={(e) => handleParagraphChange(index, e.target.value)}
                                                     placeholder={index === 0 ? "Start writing your story..." : "Continue writing..."}
                                                     rows={3}
-                                                    className="w-full resize-none overflow-hidden px-2 py-2 text-base md:text-lg leading-relaxed placeholder-gray-400 text-gray-800 bg-transparent outline-none focus:ring-0 transition duration-150"
+                                                    className="w-full resize-none overflow-hidden px-1 md:px-2 py-2 text-base md:text-lg leading-relaxed placeholder-gray-400 text-gray-800 bg-transparent outline-none focus:ring-0 transition duration-150"
                                                 />
                                             </div>
                                             {text.paragraphs.length > 1 && (
                                                 <button
                                                     onClick={() => removeParagraph(index)}
-                                                    className="opacity-0 group-hover:opacity-100 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200"
+                                                    className="opacity-100 md:opacity-0 group-hover:opacity-100 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200"
                                                     aria-label="Remove paragraph"
                                                 >
                                                     <X className="w-5 h-5" />
@@ -324,7 +324,7 @@ const CreateStory = () => {
                                     {index === text.paragraphs.length - 1 && (
                                         <button
                                             onClick={addParagraph}
-                                            className="mt-4 w-full flex items-center justify-center gap-2 py-4 bg-white border-2 border-dashed border-gray-300 rounded-xl text-gray-600 font-medium hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 group"
+                                            className="mt-4 w-full flex items-center justify-center gap-2 py-3 md:py-4 bg-white border-2 border-dashed border-gray-300 rounded-xl text-gray-600 font-medium hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 group"
                                         >
                                             <Plus className="w-5 h-5 group-hover:scale-110 transition-transform" />
                                             <span>Add paragraph</span>
@@ -334,14 +334,14 @@ const CreateStory = () => {
                             ))}
                         </div>
 
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 transition-all duration-300">
-                            <h3 className="text-xl font-semibold mb-4 text-gray-800">Select a Topic</h3>
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 transition-all duration-300">
+                            <h3 className="text-lg md:text-xl font-semibold mb-4 text-gray-800">Select a Topic</h3>
                             <div className="flex flex-wrap gap-2">
                                 {topicsList.map((topic) => (
                                     <button
                                         key={topic}
                                         onClick={() => handleTopicSelect(topic)}
-                                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border ${text.tag === topic
+                                        className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all duration-200 border ${text.tag === topic
                                             ? "bg-black text-white border-black"
                                             : "bg-white text-gray-700 border-gray-200 hover:border-gray-400"
                                             }`}
@@ -353,11 +353,11 @@ const CreateStory = () => {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex justify-end space-x-4 pt-6">
-                            <button className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition duration-200 ease-in-out" onClick={draftBlog}>
+                        <div className="flex flex-col sm:flex-row justify-end gap-3 sm:space-x-4 pt-4 md:pt-6">
+                            <button className="w-full sm:w-auto px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition duration-200 ease-in-out" onClick={draftBlog}>
                                 Save Draft
                             </button>
-                            <button className="px-6 py-3 bg-[#2E2E2E] text-white rounded-xl font-semibold shadow-md transition duration-200 ease-in-out" onClick={publishBlog}>
+                            <button className="w-full sm:w-auto px-6 py-3 bg-[#2E2E2E] text-white rounded-xl font-semibold shadow-md transition duration-200 ease-in-out" onClick={publishBlog}>
                                 Publish
                             </button>
                         </div>

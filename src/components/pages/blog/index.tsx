@@ -99,46 +99,45 @@ const BlogPage = ({ slug }: BlogPageProps) => {
 
     return (
         <section>
-            <div className="flex flex-col gap-11 py-[100px]">
+            <div className="flex flex-col gap-8 md:gap-11 py-10 md:py-[100px]">
                 <Container>
-                    <div className="flex flex-col gap-3 w-fit mx-auto">
-                        <div className="flex flex-col gap-1">
-                            <h1 className="text-[50px] font-bold">{blog.title}</h1>
+                    <div className="flex flex-col gap-4 w-full max-w-3xl mx-auto px-1">
+                        <div className="flex flex-col gap-2">
+                            <h1 className="text-3xl sm:text-4xl md:text-[50px] font-bold leading-tight">{blog.title}</h1>
                             {blog.subtitle && (
-                                <h2 className="text-[25px] font-medium text-[#8f8f8f]">{blog.subtitle}</h2>
+                                <h2 className="text-lg sm:text-xl md:text-[25px] font-medium text-[#8f8f8f] leading-snug">{blog.subtitle}</h2>
                             )}
                         </div>
 
-                        <div className="flex flex-row gap-2">
-                            <div className="writer-image-cont">
-                                <img src={blog.author.image || "/images/profile.png"} className="h-[50px] rounded-full" alt={blog.author.name} />
+                        <div className="flex items-center gap-3">
+                            <div className="writer-image-cont shrink-0">
+                                <img src={blog.author.image || "/images/profile.png"} className="h-10 w-10 md:h-[50px] md:w-[50px] rounded-full object-cover" alt={blog.author.name} />
                             </div>
 
-                            <div className="flex flex-col gap-1">
-                                <h4>{blog.author.name}</h4>
-                                <p className="text-[#8f8f8f] text-[13px]">published {blog.createdAt} • 3 min read </p>
+                            <div className="flex flex-col gap-0.5">
+                                <h4 className="text-sm md:text-base font-semibold">{blog.author.name}</h4>
+                                <p className="text-[#8f8f8f] text-xs md:text-[13px]">published {blog.createdAt} • 3 min read </p>
                             </div>
                         </div>
                     </div>
                 </Container>
 
-                <div className="w-full lg:w-[1140px] mx-auto">
-                    <img src={blog.coverImage || "/images/ice.jpeg"} className="h-full w-full rounded-xl object-cover" alt="Blog Cover" />
+                <div className="w-full lg:w-[1140px] px-0 md:px-4 mx-auto">
+                    <img src={blog.coverImage || "/images/ice.jpeg"} className="h-auto w-full md:rounded-xl object-cover" alt="Blog Cover" />
                 </div>
 
-
                 <Container>
-                    <div className="flex flex-col gap-8 w-full md:w-[900px] mx-auto">
-                        <div className="flex flex-col gap-8">
+                    <div className="flex flex-col gap-8 w-full md:w-[900px] mx-auto px-1">
+                        <div className="flex flex-col gap-6 md:gap-8">
                             {blog.content.map((para: string, index: number) => (
-                                <p key={index} className="text-xl font-normal leading-loose text-gray-800">
+                                <p key={index} className="text-lg md:text-xl font-normal leading-loose text-gray-800">
                                     {para}
                                 </p>
                             ))}
                         </div>
 
                         <div className="w-full">
-                            <div className="p-4 border-t-[2px] border-b-[2px] border-[#8f8f8f] flex justify-between  mx-auto">
+                            <div className="p-3 md:p-4 border-t-[2px] border-b-[2px] border-[#8e8e8e] flex justify-between mx-auto">
                                 <div className="flex gap-4">
                                     <span
                                         onClick={() => setShowComments(!showComments)}

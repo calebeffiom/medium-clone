@@ -51,7 +51,7 @@ const ProfilePage = () => {
 
                 {/* Profile Section */}
                 <Container>
-                    <div className="w-full mx-auto px-6 -mt-16 relative z-10">
+                    <div className="w-full mx-auto px-4 md:px-6 -mt-16 relative z-10">
                         <div className="flex flex-col md:flex-row gap-8 items-start">
                             {/* Left Column - Profile Info */}
 

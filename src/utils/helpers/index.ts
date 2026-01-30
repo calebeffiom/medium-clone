@@ -307,30 +307,37 @@ const extractPublicId = (url: string) => {
     return `${folder}/${publicIdWithExtension}`;
 };
 
-const getPersonalizedBlogs = async (preferredTopics: string[]) => {
+const getPersonalizedBlogs = async (userId?: string) => {
     try {
         await connectToMongo();
+
+        // Fetch all published blogs
         const blogs = await Blog.find({ published: true })
             .sort({ createdAt: -1 })
             .populate('author')
             .lean();
 
-        if (!preferredTopics || preferredTopics.length === 0) {
+        if (!userId) {
             return blogs;
         }
 
-        // Sort: Blogs with matching tags come first.
-        // Stable sort to preserve createdAt order within groups.
-        const sortedBlogs = blogs.sort((a: any, b: any) => {
-            const aHasTopic = a.tags.some((t: string) => preferredTopics.includes(t));
-            const bHasTopic = b.tags.some((t: string) => preferredTopics.includes(t));
+        const user = await User.findById(userId);
+        if (!user || !user.favoriteTopics || user.favoriteTopics.length === 0) {
+            return blogs;
+        }
 
-            if (aHasTopic && !bHasTopic) return -1;
-            if (!aHasTopic && bHasTopic) return 1;
-            return 0;
-        });
+        const preferredTopics = user.favoriteTopics;
 
-        return sortedBlogs;
+        // Filter blogs that match the user's favorite topics
+        const matchingBlogs = blogs.filter((blog: any) => preferredTopics.includes(blog.tag));
+
+        // If matches found, return only matches. 
+        if (matchingBlogs.length > 0) {
+            return matchingBlogs;
+        }
+
+        // If no matches, return all blogs
+        return blogs;
     } catch (error) {
         console.error('Error fetching personalized blogs:', error);
         throw error;

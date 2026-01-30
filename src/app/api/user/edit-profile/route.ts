@@ -15,11 +15,12 @@ export async function PUT(request: Request) {
         }
 
         const body = await request.json();
-        const { name, bio, image, coverPicture } = body;
+        const { name, bio, image, coverPicture, favoriteTopics } = body;
 
         const updateData: any = {};
         if (name) updateData.name = name;
         if (bio) updateData.bio = bio;
+        if (favoriteTopics) updateData.favoriteTopics = favoriteTopics;
 
         // Handle profile picture upload
         if (image && image.startsWith("data:image")) {

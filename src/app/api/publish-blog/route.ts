@@ -184,21 +184,7 @@ export async function PUT(req: NextRequest) {
 export async function GET() {
   try {
     const session: any = await getServerSession(authOptions);
-    let preferredTopics: string[] = [];
-
-    if (session && session.user) {
-      try {
-        await connectToMongo();
-        const user = await User.findById(session.user.id);
-        if (user && user.favoriteTopics) {
-          preferredTopics = user.favoriteTopics;
-        }
-      } catch (e) {
-        console.error("Error fetching user for topics:", e);
-      }
-    }
-
-    const blogs = await getPersonalizedBlogs(preferredTopics);
+    const blogs = await getPersonalizedBlogs(session?.user?.id);
 
     const formatBlogs = blogs.map((blog: any) => ({
       id: blog._id.toString(),

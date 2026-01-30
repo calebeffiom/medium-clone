@@ -2,6 +2,7 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { X, Camera, Image as ImageIcon, Loader2 } from "lucide-react";
 import axios from "axios";
+import { topicsList } from "@/utils/constants/topics";
 
 interface EditProfileModalProps {
     isOpen: boolean;
@@ -15,6 +16,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose, us
     const [bio, setBio] = useState(user?.bio || "");
     const [profileImage, setProfileImage] = useState(user?.image || "");
     const [coverImage, setCoverImage] = useState(user?.coverPicture || "");
+    const [favoriteTopics, setFavoriteTopics] = useState<string[]>(user?.favoriteTopics || []);
     const [loading, setLoading] = useState(false);
     const [isChanged, setIsChanged] = useState(false);
 
@@ -23,11 +25,12 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose, us
 
     useEffect(() => {
         const hasNameChanged = name !== user?.name;
-        const hasBioChanged = bio !== user?.bio;
+        const basBioChanged = bio !== user?.bio;
         const hasProfileChanged = profileImage !== user?.image;
         const hasCoverChanged = coverImage !== user?.coverPicture;
-        setIsChanged(hasNameChanged || hasBioChanged || hasProfileChanged || hasCoverChanged);
-    }, [name, bio, profileImage, coverImage, user]);
+        const hasTopicsChanged = JSON.stringify(favoriteTopics.sort()) !== JSON.stringify((user?.favoriteTopics || []).sort());
+        setIsChanged(hasNameChanged || basBioChanged || hasProfileChanged || hasCoverChanged || hasTopicsChanged);
+    }, [name, bio, profileImage, coverImage, favoriteTopics, user]);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, type: "profile" | "cover") => {
         const file = e.target.files?.[0];
@@ -53,6 +56,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose, us
             if (bio !== user?.bio) payload.bio = bio;
             if (profileImage !== user?.image) payload.image = profileImage;
             if (coverImage !== user?.coverPicture) payload.coverPicture = coverImage;
+            if (JSON.stringify(favoriteTopics.sort()) !== JSON.stringify((user?.favoriteTopics || []).sort())) payload.favoriteTopics = favoriteTopics;
 
             await axios.put("/api/user/edit-profile", payload);
             onSuccess();
@@ -63,7 +67,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose, us
         } finally {
             setLoading(false);
         }
-    }, [isChanged, name, bio, profileImage, coverImage, user, onSuccess, onClose]);
+    }, [isChanged, name, bio, profileImage, coverImage, favoriteTopics, user, onSuccess, onClose]);
 
     if (!isOpen) return null;
 
@@ -157,6 +161,32 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose, us
                                 className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-black outline-none transition-all resize-none"
                                 placeholder="Tell us about yourself"
                             />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Favorite Topics (Max 5)</label>
+                            <div className="flex flex-wrap gap-2">
+                                {topicsList.map((topic) => (
+                                    <button
+                                        key={topic}
+                                        onClick={() => {
+                                            if (favoriteTopics.includes(topic)) {
+                                                setFavoriteTopics(prev => prev.filter(t => t !== topic));
+                                            } else {
+                                                if (favoriteTopics.length < 5) {
+                                                    setFavoriteTopics(prev => [...prev, topic]);
+                                                }
+                                            }
+                                        }}
+                                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${favoriteTopics.includes(topic)
+                                            ? "bg-black text-white border-black"
+                                            : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+                                            }`}
+                                    >
+                                        {topic}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
