@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
-import { getUserById, formatRelativeTime, formatMonthYear, pinPost, unpinPost } from "@/utils/helpers";
+import { getUserById, formatRelativeTime, formatMonthYear, pinPost, unpinPost, updateUserProfile } from "@/utils/helpers";
 import { Bookmark } from "lucide-react";
 
 export async function GET() {
@@ -33,7 +33,7 @@ export async function GET() {
                 content: blog.content,
                 coverImage: blog.coverImage,
                 slug: blog.slug,
-                tags: blog.tags,
+                tag: blog.tag,
                 published: blog.published,
                 createdAt: formatRelativeTime(blog.createdAt.toISOString()),
             })) || [],
@@ -44,7 +44,7 @@ export async function GET() {
                 content: blog.content,
                 coverImage: blog.coverImage,
                 slug: blog.slug,
-                tags: blog.tags,
+                tag: blog.tag,
                 published: blog.published,
                 createdAt: formatRelativeTime(blog.createdAt.toISOString()),
             })) || [],
@@ -54,7 +54,7 @@ export async function GET() {
                 content: blog.content,
                 coverImage: blog.coverImage,
                 slug: blog.slug,
-                tags: blog.tags,
+                tag: blog.tag,
                 published: blog.published,
                 createdAt: formatRelativeTime(blog.createdAt.toISOString()),
             })) || [],
@@ -76,26 +76,33 @@ export async function PUT(request: Request) {
         const session: any = await getServerSession(authOptions)
         if (!session || !session.user) {
             return NextResponse.json(
-                { message: "Unauthorized: You must be logged in to pin stories" },
+                { message: "Unauthorized: You must be logged in" },
                 { status: 401 }
             )
         }
 
-        const { postId } = await request.json()
-        if (!postId) {
-            return NextResponse.json(
-                { message: "Post ID is required" },
-                { status: 400 }
-            )
+        const data = await request.json()
+        const { postId, favoriteTopics } = data
+
+        if (postId) {
+            await pinPost(session.user.id, postId)
+            return NextResponse.json({ message: "Post pinned successfully" }, { status: 200 });
         }
 
-        await pinPost(session.user.id, postId)
+        if (favoriteTopics) {
+            await updateUserProfile(session.user.id, { favoriteTopics })
+            return NextResponse.json({ message: "Topics updated successfully" }, { status: 200 });
+        }
 
-        return NextResponse.json({ message: "Post pinned successfully" }, { status: 200 });
+        return NextResponse.json(
+            { message: "Invalid request data" },
+            { status: 400 }
+        )
+
     } catch (error: any) {
         console.error("Error in PUT /api/user:", error);
         return NextResponse.json(
-            { error: error.message || "Failed to pin story" },
+            { error: error.message || "Failed to update user" },
             { status: 500 }
         );
     }

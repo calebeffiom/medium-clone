@@ -307,4 +307,34 @@ const extractPublicId = (url: string) => {
     return `${folder}/${publicIdWithExtension}`;
 };
 
-export { generateSlug, getAllBlogs, getTrendingBlogs, formatRelativeTime, getBlogBySlug, getUserById, formatMonthYear, pinPost, unpinPost, addComment, toggleLike, getUserByUsername, updateUserProfile, bookmarkBlog, unbookmarkBlog, extractPublicId }
+const getPersonalizedBlogs = async (preferredTopics: string[]) => {
+    try {
+        await connectToMongo();
+        const blogs = await Blog.find({ published: true })
+            .sort({ createdAt: -1 })
+            .populate('author')
+            .lean();
+
+        if (!preferredTopics || preferredTopics.length === 0) {
+            return blogs;
+        }
+
+        // Sort: Blogs with matching tags come first.
+        // Stable sort to preserve createdAt order within groups.
+        const sortedBlogs = blogs.sort((a: any, b: any) => {
+            const aHasTopic = a.tags.some((t: string) => preferredTopics.includes(t));
+            const bHasTopic = b.tags.some((t: string) => preferredTopics.includes(t));
+
+            if (aHasTopic && !bHasTopic) return -1;
+            if (!aHasTopic && bHasTopic) return 1;
+            return 0;
+        });
+
+        return sortedBlogs;
+    } catch (error) {
+        console.error('Error fetching personalized blogs:', error);
+        throw error;
+    }
+};
+
+export { generateSlug, getAllBlogs, getTrendingBlogs, formatRelativeTime, getBlogBySlug, getUserById, formatMonthYear, pinPost, unpinPost, addComment, toggleLike, getUserByUsername, updateUserProfile, bookmarkBlog, unbookmarkBlog, extractPublicId, getPersonalizedBlogs }

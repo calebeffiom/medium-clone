@@ -16,7 +16,7 @@ const DraftsTab = () => {
                         profileImage={user.image}
                         userName={user.name}
                         postTime={draft.createdAt}
-                        catergory={draft.tags[0]}
+                        catergory={draft.tag}
                         slug={draft.slug}
                     />
                 ))

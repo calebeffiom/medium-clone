@@ -9,6 +9,7 @@ export interface IUser extends Document {
   image: string;
   coverPicture: string;
   bio: string;
+  favoriteTopics: string[];
   blogsWritten: mongoose.Schema.Types.ObjectId[];
   pinnedStories: mongoose.Schema.Types.ObjectId[];
   bookmarks: mongoose.Schema.Types.ObjectId[];
@@ -25,6 +26,7 @@ const UserSchema = new Schema<IUser>(
     image: { type: String, default: "/images/profile.png" },
     coverPicture: { type: String, default: "black" },
     bio: { type: String, default: "Nothing to see here yet" },
+    favoriteTopics: { type: [String], default: [] },
     blogsWritten: [{ type: mongoose.Schema.Types.ObjectId, ref: "Blog" }],
     pinnedStories: [{ type: mongoose.Schema.Types.ObjectId, ref: "Blog" }],
     bookmarks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Blog" }],

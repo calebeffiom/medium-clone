@@ -5,9 +5,11 @@ import mongoose from "mongoose";
 import cloudinary from "@/lib/cloudinaryConfig";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
-import { formatRelativeTime, generateSlug, getAllBlogs, extractPublicId } from "@/utils/helpers";
+import { formatRelativeTime, generateSlug, getAllBlogs, extractPublicId, getPersonalizedBlogs } from "@/utils/helpers";
 import User from "@/models/user-model";
 // import { Collection } from "mongodb";
+
+
 export async function POST(req: NextRequest) {
   const res = NextResponse
 
@@ -15,7 +17,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const reqBody = await req.json()
-    const { title, subtitle, paragraphs, coverImage, tags } = reqBody
+    const { title, subtitle, paragraphs, coverImage, tag } = reqBody
 
     const session = await getServerSession(authOptions)
 
@@ -28,7 +30,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 2️⃣ Validation
-    if (!title || !subtitle || !paragraphs || !coverImage || !tags) {
+    if (!title || !subtitle || !paragraphs || !coverImage || !tag) {
       return res.json(
         { message: "Bad request" },
         { status: 400 }
@@ -58,7 +60,7 @@ export async function POST(req: NextRequest) {
           content: paragraphs,
           coverImage: uploadedImage.secure_url,
           slug,
-          tags,
+          tag,
           published: true,
         },
       ],
@@ -109,7 +111,7 @@ export async function PUT(req: NextRequest) {
 
   try {
     const reqBody = await req.json();
-    const { id, title, subtitle, paragraphs, coverImage, tags } = reqBody;
+    const { id, title, subtitle, paragraphs, coverImage, tag } = reqBody;
 
     const session = await getServerSession(authOptions);
 
@@ -156,7 +158,7 @@ export async function PUT(req: NextRequest) {
     // Check if tags is array, split if string?
     // create-story sends array (text.tags is array in my code?)
     // In create-story, text.tags is string[], but input handling splits it.
-    blog.tags = tags;
+    blog.tags = tag;
     blog.published = true; // Set to published
 
     if (blog.title !== title) {
@@ -181,7 +183,23 @@ export async function PUT(req: NextRequest) {
 
 export async function GET() {
   try {
-    const blogs = await getAllBlogs();
+    const session: any = await getServerSession(authOptions);
+    let preferredTopics: string[] = [];
+
+    if (session && session.user) {
+      try {
+        await connectToMongo();
+        const user = await User.findById(session.user.id);
+        if (user && user.favoriteTopics) {
+          preferredTopics = user.favoriteTopics;
+        }
+      } catch (e) {
+        console.error("Error fetching user for topics:", e);
+      }
+    }
+
+    const blogs = await getPersonalizedBlogs(preferredTopics);
+
     const formatBlogs = blogs.map((blog: any) => ({
       id: blog._id.toString(),
       title: blog.title,
@@ -189,7 +207,7 @@ export async function GET() {
       content: blog.content,
       coverImage: blog.coverImage,
       slug: blog.slug,
-      tags: blog.tags,
+      tag: blog.tag,
       published: blog.published,
       likes: blog.likes,
       comments: blog.comments,

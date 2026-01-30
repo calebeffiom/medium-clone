@@ -21,7 +21,7 @@ export default function SignupPage() {
     try {
       setIsLoading(true)
       await signIn('google', {
-        callbackUrl: '/latest-stories',
+        callbackUrl: '/select-topics',
       })
     } catch (error) {
       console.log(error)

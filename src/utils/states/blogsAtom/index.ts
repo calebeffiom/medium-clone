@@ -14,7 +14,7 @@ export interface Blog {
     content: string[]
     coverImage: string
     slug: string
-    tags: string[]
+    tag: string
     published: boolean
     likes: number
     createdAt: string

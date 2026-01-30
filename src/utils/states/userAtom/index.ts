@@ -7,7 +7,7 @@ interface Blog {
     coverImage: string;
     subtitle?: string;
     slug: string;
-    tags: string[];
+    tag: string;
     published: boolean;
     createdAt: string;
 }

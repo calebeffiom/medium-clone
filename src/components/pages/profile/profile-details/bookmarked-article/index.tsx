@@ -13,6 +13,7 @@ interface types {
     userName: string,
     postTime: string,
     catergory: string
+    slug: string
 
 
 }
@@ -24,7 +25,8 @@ const BookmarkedArticle = ({
     profileImage,
     userName,
     postTime,
-    catergory
+    catergory,
+    slug
 }: types) => {
 
     const [user, setUser] = useRecoilState(userAtom);

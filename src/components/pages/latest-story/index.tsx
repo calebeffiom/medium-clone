@@ -53,7 +53,7 @@ const LatestStoriesSection = () => {
                                     profileImage={blog.author.image || "/images/profile.png"}
                                     userName={blog.author.name}
                                     postTime={blog.createdAt}
-                                    catergory={blog.tags[0] || "Horror"}
+                                    catergory={blog.tag}
                                     slug={blog.slug}
                                 />
                             ))

@@ -5,6 +5,7 @@ import axios from "axios";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "@/utils/states/userAtom";
+import { topicsList } from "@/utils/constants/topics";
 
 /**
  * Defines the structure for the story text state.
@@ -14,7 +15,7 @@ interface TextState {
     subtitle: string;
     paragraphs: string[];
     coverImage: string | null;
-    tags: string[]
+    tag: string
 }
 
 const CreateStory = () => {
@@ -23,7 +24,7 @@ const CreateStory = () => {
         subtitle: "",
         paragraphs: [""],
         coverImage: null,
-        tags: [""]
+        tag: ""
     });
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -45,7 +46,7 @@ const CreateStory = () => {
                     subtitle: draft.subtitle || "",
                     paragraphs: draft.content,
                     coverImage: draft.coverImage,
-                    tags: draft.tags
+                    tag: draft.tag  // fallback for old data
                 })
                 setImagePreview(draft.coverImage)
             }
@@ -158,15 +159,10 @@ const CreateStory = () => {
         fileInputRef.current?.click();
     };
 
-    const handleTagsChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-        const { value, name } = e.target
-        const tags = value.trim()
-            .replace(/\s+/g, " ")
-            .split(/[,\s]+/)
-            .filter(Boolean);
+    const handleTopicSelect = (topic: string) => {
         setText((prev) => ({
             ...prev,
-            [name]: tags
+            tag: topic
         }))
     }
 
@@ -177,7 +173,8 @@ const CreateStory = () => {
         if (text.subtitle === "") setFormError("Subtitle is required");
         if (text.coverImage === null) setFormError("Cover image is required");
         if (text.paragraphs.length <= 1) setFormError("Add at least two paragraph");
-        if (text.tags.length < 1) setFormError("Add at least one tag");
+        if (text.paragraphs.length <= 1) setFormError("Add at least two paragraph");
+        if (text.tag === "") setFormError("Select a topic");
         console.log(formError)
         try {
             if (draftId) {
@@ -185,14 +182,14 @@ const CreateStory = () => {
                 const req = await axios.put("/api/publish-blog", { ...text, id: draftId })
                 console.log(req.data.message)
                 if (req.status === 200) {
-                    router.push('/');
+                    router.push('/latest-stories');
                 }
             } else {
                 // Publish new
                 const req = await axios.post("/api/publish-blog", text)
                 console.log(req.data.message)
                 if (req.status === 201) {
-                    router.push('/');
+                    router.push('/latest-stories');
                 }
             }
 
@@ -206,7 +203,8 @@ const CreateStory = () => {
         if (text.subtitle === "") setFormError("Subtitle is required");
         if (text.coverImage === null) setFormError("Cover image is required");
         if (text.paragraphs.length <= 1) setFormError("Add at least two paragraph");
-        if (text.tags.length < 1) setFormError("Add at least one tag");
+        if (text.paragraphs.length <= 1) setFormError("Add at least two paragraph");
+        if (text.tag === "") setFormError("Select a topic");
         console.log(formError)
         try {
             const req = await axios.post("/api/draft-blog", text)
@@ -336,14 +334,22 @@ const CreateStory = () => {
                             ))}
                         </div>
 
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2 transition-all duration-300">
-                            <textarea
-                                name="tags"
-                                value={text.tags}
-                                onChange={handleTagsChange}
-                                placeholder="Include post tags here"
-                                className="w-full max-h-40 resize-none overflow-hidden px-4 py-3 outline-none focus:ring-0 transition duration-150"
-                            />
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 transition-all duration-300">
+                            <h3 className="text-xl font-semibold mb-4 text-gray-800">Select a Topic</h3>
+                            <div className="flex flex-wrap gap-2">
+                                {topicsList.map((topic) => (
+                                    <button
+                                        key={topic}
+                                        onClick={() => handleTopicSelect(topic)}
+                                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border ${text.tag === topic
+                                            ? "bg-black text-white border-black"
+                                            : "bg-white text-gray-700 border-gray-200 hover:border-gray-400"
+                                            }`}
+                                    >
+                                        {topic}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
 
                         {/* Action Buttons */}
