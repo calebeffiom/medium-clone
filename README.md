@@ -1,6 +1,6 @@
 # Medium Clone
 
-A full-stack blogging platform inspired by Medium, built with Next.js 14.
+A full-stack blogging platform inspired by Vocal Media, built with Next.js 14.
 
 ## Tech Stack
 
