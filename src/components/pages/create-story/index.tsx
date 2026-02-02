@@ -6,6 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "@/utils/states/userAtom";
 import { topicsList } from "@/utils/constants/topics";
+import { useSession } from "next-auth/react";
 
 /**
  * Defines the structure for the story text state.
@@ -19,6 +20,7 @@ interface TextState {
 }
 
 const CreateStory = () => {
+    const { status } = useSession();
     const [text, setText] = useState<TextState>({
         title: "",
         subtitle: "",
@@ -36,6 +38,16 @@ const CreateStory = () => {
     const draftId = searchParams.get('id')
     const user = useRecoilValue(userAtom)
     const router = useRouter()
+
+    useEffect(() => {
+        if (status === "unauthenticated") {
+            const callbackUrl =
+                typeof window !== "undefined"
+                    ? window.location.pathname + window.location.search
+                    : "/create-story";
+            router.replace(`/signup?callbackUrl=${encodeURIComponent(callbackUrl)}`);
+        }
+    }, [status, router]);
 
     useEffect(() => {
         if (draftId && user) {

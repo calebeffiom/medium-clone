@@ -13,8 +13,8 @@ const ProfileActions: React.FC<ProfileActionsProps> = ({ user, onSuccess }) => {
 
     return (
         <>
-            <div className="w-full sticky top-0 md:w-72 mt-8 md:mt-16">
-                <div className="bg-gray-50 rounded-lg p-6 shadow-lg">
+            <div className="w-full md:w-72 mt-8 md:mt-16 md:sticky md:top-24 md:self-start">
+                <div className="bg-gray-50 rounded-lg p-4 sm:p-6 shadow-lg">
                     <h3 className="font-medium text-gray-800 mb-2">
                         Update your profile
                     </h3>

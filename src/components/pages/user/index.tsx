@@ -51,7 +51,7 @@ const User = ({ username }: UserProps) => {
                 {/* Banner */}
                 <div className="relative h-60 w-full overflow-hidden">
                     <img
-                        src={user?.coverPicture !== "black" && user?.coverPicture ? user.coverPicture : "https://readdy.ai/api/search-image?query=Minimalist%20writing%20workspace%20with%20soft%20green%20plants%20in%20background%2C%20blurred%20aesthetic%2C%20calm%20and%20peaceful%20environment%2C%20natural%20light%2C%20inspiring%20creative%20space%20for%20writers%20and%20developers&width=1440&height=400&seq=banner1&orientation=landscape"}
+                        src={user?.coverPicture !== "black" || null ? user?.coverPicture : "https://readdy.ai/api/search-image?query=Minimalist%20writing%20workspace%20with%20soft%20green%20plants%20in%20background%2C%20blurred%20aesthetic%2C%20calm%20and%20peaceful%20environment%2C%20natural%20light%2C%20inspiring%20creative%20space%20for%20writers%20and%20developers&width=1440&height=400&seq=banner1&orientation=landscape"}
                         alt="Profile banner"
                         className="w-full h-full object-cover object-top"
                     />
@@ -60,7 +60,7 @@ const User = ({ username }: UserProps) => {
 
                 {/* Profile Section */}
                 <Container>
-                    <div className="w-full max-w-5xl px-6 -mt-16 relative z-10">
+                    <div className="w-full max-w-5xl  -mt-16 relative z-10">
                         <UserDetails user={user} />
                     </div>
                 </Container>

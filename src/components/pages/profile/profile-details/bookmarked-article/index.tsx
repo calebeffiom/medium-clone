@@ -4,6 +4,7 @@ import { BookmarkMinus, Loader2 } from "lucide-react"
 import { useRecoilState } from "recoil";
 import { userAtom } from "@/utils/states/userAtom";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 interface types {
     id: string,
     previewImage: string,
@@ -30,8 +31,8 @@ const BookmarkedArticle = ({
 }: types) => {
 
     const [user, setUser] = useRecoilState(userAtom);
-    const isBookmarked = user?.bookmarks?.some((b: any) => b.id === id || b._id === id);
     const [loading, setLoading] = useState(false)
+    const router = useRouter()
     const handleUnBookmark = async () => {
         if (!user) return;
         try {
@@ -54,7 +55,13 @@ const BookmarkedArticle = ({
         <div className="story-flex-cont h-[450px] relative">
             <div onClick={() => console.log("clicked")}>
                 <div>
-                    <img src={previewImage} className="rounded-[10px] mb-[15px] w-[100%] h-[200px]" alt="" />
+                    <img
+                        src={previewImage}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        className="rounded-[10px] mb-[15px] w-[100%] h-[200px]"
+                    />
                     <h2 className="text-[25px] mb-[15px] line-clamp-2">{heading}</h2>
                     <p className="text-[17px] w-full line-clamp-3">{Array.isArray(description) ? description[0] : description}</p>
                 </div>
@@ -63,7 +70,13 @@ const BookmarkedArticle = ({
 
 
                         <div className="writer-image-cont">
-                            <img src={profileImage} className="h-[50px] rounded-full" alt="" />
+                            <img
+                                src={profileImage}
+                                alt=""
+                                loading="lazy"
+                                decoding="async"
+                                className="h-[50px] rounded-full"
+                            />
                         </div>
 
 

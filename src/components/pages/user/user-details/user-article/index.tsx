@@ -1,8 +1,8 @@
 "use client"
-import { PinOffIcon, PinIcon } from "lucide-react";
-import Link from "next/link";
+import { PinIcon } from "lucide-react";
 import { useRecoilState } from "recoil";
 import { userAtom } from "@/utils/states/userAtom";
+import { useRouter } from "next/navigation"
 
 interface UserArticleProps {
     id: string;
@@ -27,11 +27,18 @@ const UserArticle = ({
     category,
     slug
 }: UserArticleProps) => {
-    const [user, setUser] = useRecoilState(userAtom);
+    const [user] = useRecoilState(userAtom);
+    const router = useRouter();
     return (
         <div className="story-flex-cont h-[450px] relative">
-            <div onClick={() => console.log("clicked")}>
-                <img src={previewImage} className="rounded-[10px] mb-[15px] w-[100%] h-[200px]" alt="" />
+            <div onClick={() => router.push(`/blog/${slug}`)}>
+                <img
+                    src={previewImage}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    className="rounded-[10px] mb-[15px] w-[100%] h-[200px]"
+                />
                 <h2 className="text-[25px] mb-[15px] line-clamp-2">{heading}</h2>
                 <p className="text-[17px] w-full line-clamp-3">{Array.isArray(description) ? description[0] : description}</p>
             </div>
@@ -40,7 +47,13 @@ const UserArticle = ({
 
 
                     <div className="writer-image-cont">
-                        <img src={profileImage} className="h-[50px] rounded-full" alt="" />
+                        <img
+                            src={profileImage}
+                            alt=""
+                            loading="lazy"
+                            decoding="async"
+                            className="h-[50px] rounded-full"
+                        />
                     </div>
 
 
@@ -52,9 +65,8 @@ const UserArticle = ({
                 </div>
 
 
-                <div className="cursor-pointer">{
-                    user?.pinnedStories.some((story: any) => story.id === id) ?
-                        <PinOffIcon /> :
+                <div>{
+                    user?.pinnedStories.some((story: any) => story.id === id) &&
                         <PinIcon />
                 }</div>
             </div>

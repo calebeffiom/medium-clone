@@ -14,7 +14,13 @@ const LandingPage = () => {
                         </Link>
                     </div>
                     <div className="header-image-cont w-full lg:w-[60%] flex justify-center lg:justify-end">
-                        <img src="/images/writer.png" alt="Writer" className="w-[80%] md:w-full h-auto max-h-[300px] md:max-h-[500px] object-contain" />
+                        <img
+                            src="/images/writer.png"
+                            alt="Writer"
+                            loading="lazy"
+                            decoding="async"
+                            className="w-[80%] md:w-full h-auto max-h-[300px] md:max-h-[500px] object-contain"
+                        />
                     </div>
                 </div>
             </Container>

@@ -7,10 +7,24 @@ import axios from "axios";
 import { useRecoilState } from "recoil";
 import { userAtom } from "@/utils/states/userAtom";
 import ProfileSkeleton from "./profile-skeleton";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const ProfilePage = () => {
+    const { status } = useSession();
+    const router = useRouter();
     const [user, setUser] = useRecoilState(userAtom);
     const [loading, setLoading] = useState(!user);
+
+    useEffect(() => {
+        if (status === "unauthenticated") {
+            const callbackUrl =
+                typeof window !== "undefined"
+                    ? window.location.pathname + window.location.search
+                    : "/profile";
+            router.replace(`/signup?callbackUrl=${encodeURIComponent(callbackUrl)}`);
+        }
+    }, [status, router]);
 
     const fetchUserProfile = useCallback(async () => {
         if (!user) setLoading(true);
@@ -19,12 +33,20 @@ const ProfilePage = () => {
             if (res.data.formatedUser) {
                 setUser(res.data.formatedUser);
             }
-        } catch (error) {
+        } catch (error: any) {
+            if (error?.response?.status === 401) {
+                const callbackUrl =
+                    typeof window !== "undefined"
+                        ? window.location.pathname + window.location.search
+                        : "/profile";
+                router.replace(`/signup?callbackUrl=${encodeURIComponent(callbackUrl)}`);
+                return;
+            }
             console.error("Error fetching user profile:", error);
         } finally {
             setLoading(false);
         }
-    }, [setUser, user]);
+    }, [setUser, user, router]);
 
     useEffect(() => {
         fetchUserProfile();
@@ -51,7 +73,7 @@ const ProfilePage = () => {
 
                 {/* Profile Section */}
                 <Container>
-                    <div className="w-full mx-auto px-4 md:px-6 -mt-16 relative z-10">
+                    <div className="w-full mx-auto -mt-16 relative z-10">
                         <div className="flex flex-col md:flex-row gap-8 items-start">
                             {/* Left Column - Profile Info */}
 

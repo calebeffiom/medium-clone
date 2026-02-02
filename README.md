@@ -33,8 +33,6 @@ cd medium-clone
 2. Install dependencies:
 
 ```bash
-npm install
-# or
 yarn install
 ```
 
@@ -60,7 +58,7 @@ CLOUDINARY_SECRET=<cloudinary-api-secret>
 5. Run the development server:
 
 ```bash
-npm run dev
+yarn dev
 ```
 
 6. Open [http://localhost:3000](http://localhost:3000) in your browser.

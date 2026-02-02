@@ -7,12 +7,16 @@ import { useState, useEffect, useCallback } from "react"
 import BlogSkeleton from "./blog-skeleton"
 
 import axios from "axios"
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
 
 interface BlogPageProps {
     slug: string
 }
 
 const BlogPage = ({ slug }: BlogPageProps) => {
+    const { status } = useSession();
+    const router = useRouter();
     const [blog, setBlog] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [showComments, setShowComments] = useState(false);
@@ -39,6 +43,14 @@ const BlogPage = ({ slug }: BlogPageProps) => {
 
     const handleLike = async () => {
         try {
+            if (status === "unauthenticated") {
+                const callbackUrl =
+                    typeof window !== "undefined"
+                        ? window.location.pathname + window.location.search
+                        : `/blog/${slug}`;
+                router.push(`/signup?callbackUrl=${encodeURIComponent(callbackUrl)}`);
+                return;
+            }
             if (blog.hasLiked) {
                 await axios.delete(`/api/blogs/${slug}/blog-actions`);
             } else {
@@ -53,6 +65,14 @@ const BlogPage = ({ slug }: BlogPageProps) => {
     const handleCommentSubmit = async (content: string) => {
         setIsSubmitting(true);
         try {
+            if (status === "unauthenticated") {
+                const callbackUrl =
+                    typeof window !== "undefined"
+                        ? window.location.pathname + window.location.search
+                        : `/blog/${slug}`;
+                router.push(`/signup?callbackUrl=${encodeURIComponent(callbackUrl)}`);
+                return;
+            }
             // Placeholder for comment submission
             // const res = await axios.post(`/api/blogs/${slug}/comments`, { content });
             const res = await axios.post(`/api/blogs/${slug}/blog-actions`, { content, action: "comment" });
@@ -111,7 +131,13 @@ const BlogPage = ({ slug }: BlogPageProps) => {
 
                         <div className="flex items-center gap-3">
                             <div className="writer-image-cont shrink-0">
-                                <img src={blog.author.image || "/images/profile.png"} className="h-10 w-10 md:h-[50px] md:w-[50px] rounded-full object-cover" alt={blog.author.name} />
+                                <img
+                                    src={blog.author.image || "/images/profile.png"}
+                                    alt={blog.author.name}
+                                    loading="lazy"
+                                    decoding="async"
+                                    className="h-10 w-10 md:h-[50px] md:w-[50px] rounded-full object-cover"
+                                />
                             </div>
 
                             <div className="flex flex-col gap-0.5">
@@ -123,7 +149,13 @@ const BlogPage = ({ slug }: BlogPageProps) => {
                 </Container>
 
                 <div className="w-full lg:w-[1140px] px-0 md:px-4 mx-auto">
-                    <img src={blog.coverImage || "/images/ice.jpeg"} className="h-auto w-full md:rounded-xl object-cover" alt="Blog Cover" />
+                    <img
+                        src={blog.coverImage || "/images/ice.jpeg"}
+                        alt="Blog Cover"
+                        loading="lazy"
+                        decoding="async"
+                        className="h-auto w-full md:rounded-xl object-cover"
+                    />
                 </div>
 
                 <Container>
