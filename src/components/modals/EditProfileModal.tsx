@@ -2,6 +2,7 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { X, Camera, Image as ImageIcon, Loader2 } from "lucide-react";
 import axios from "axios";
+import toast from "react-hot-toast";
 import { topicsList } from "@/utils/constants/topics";
 
 interface EditProfileModalProps {
@@ -59,11 +60,12 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose, us
             if (favoriteTopics !== user?.favoriteTopics) payload.favoriteTopics = favoriteTopics;
 
             await axios.put("/api/user/edit-profile", payload);
+            toast.success("Profile updated successfully");
             onSuccess();
             onClose();
         } catch (error) {
             console.error("Error saving profile:", error);
-            alert("Failed to save profile. Please try again.");
+            toast.error("Failed to save profile. Please try again.");
         } finally {
             setLoading(false);
         }
